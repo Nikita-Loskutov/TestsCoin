@@ -20,24 +20,77 @@ app = Flask(__name__, static_folder='../src', template_folder='../src')
 # === Роуты Flask ===
 @app.route('/')
 def index():
-    # Отображение главной страницы с дефолтным именем пользователя
-    return render_template('index.html', username="Guest", user_id=0)
+    user_id = request.args.get('user_id', 0)
+    username = request.args.get('username', 'Guest')
+    user = get_user(user_id)
+
+    if user:
+        # Определяем монеты до следующего уровня
+        level_thresholds = [
+            0,  # Уровень 1
+            5000,  # Уровень 2
+            25000,  # Уровень 3
+            100000,  # Уровень 4
+            1000000,  # Уровень 5
+            2000000,  # Уровень 6
+            10000000,  # Уровень 7
+            50000000,  # Уровень 8
+            1000000000,  # Уровень 9
+            10000000000  # Уровень 10
+        ]
+
+        # Уровень пользователя
+        current_level = user.level
+        if current_level < len(level_thresholds):
+            next_level_coins = level_thresholds[current_level] - level_thresholds[current_level - 1]
+        else:
+            next_level_coins = "Maximum level"  # If max level, display this text
+
+        return render_template(
+            'index.html',
+            user_id=user.user_id,
+            username=user.username,
+            coins=user.coins,
+            profit_per_tap=user.profit_per_tap,
+            profit_per_hour=user.profit_per_hour,
+            level=user.level,
+            next_level_coins=next_level_coins  # Количество монет для следующего уровня
+        )
+    else:
+        return render_template(
+            'index.html',
+            user_id=user_id,
+            username=username,
+            coins=0,
+            profit_per_tap=1,
+            profit_per_hour=0,
+            level=1,
+            next_level_coins=5000  # Начальное значение для уровня 2
+        )
+
 @app.route('/mine')
 def mine():
-    # Отображение главной страницы с дефолтным именем пользователя
-    return render_template('index.html', username="Guest", user_id=0)
+    user_id = request.args.get('user_id', 0)
+    username = request.args.get('username', 'Guest')
+    return render_template('mine.html', user_id=user_id, username=username)
+
 @app.route('/friends')
 def friends():
-    # Отображение главной страницы с дефолтным именем пользователя
-    return render_template('index.html', username="Guest", user_id=0)
-@app.route('/')
+    user_id = request.args.get('user_id', 0)
+    username = request.args.get('username', 'Guest')
+    return render_template('friend.html', user_id=user_id, username=username)
+
+@app.route('/earn')
 def earn():
-    # Отображение главной страницы с дефолтным именем пользователя
-    return render_template('index.html', username="Guest", user_id=0)
+    user_id = request.args.get('user_id', 0)
+    username = request.args.get('username', 'Guest')
+    return render_template('earn.html', user_id=user_id, username=username)
+
 @app.route('/airdrop')
 def airdrop():
-    # Отображение главной страницы с дефолтным именем пользователя
-    return render_template('index.html', username="Guest", user_id=0)
+    user_id = request.args.get('user_id', 0)
+    username = request.args.get('username', 'Guest')
+    return render_template('airdrop.html', user_id=user_id, username=username)
 
 
 @app.route('/<path:filename>')
@@ -195,8 +248,8 @@ def update_profit_per_hour():
 async def start(message: types.Message):
     user_id = message.from_user.id
     username = message.from_user.username or message.from_user.first_name or "User"
-    ref_link = f"https://ce30-2a0d-5600-44-9000-00-3857.ngrok-free.app/{user_id}"  # Генерация реферальной ссылки
-    web_app_url = f"https://c5d6-2a0d-5600-44-9000-00-91d4.ngrok-free.app/user/{username}?user_id={user_id}"  # URL вашего Flask-сервера с именем пользователя
+    ref_link = f"https://d3a4-2a0d-5600-44-6000-00-3683.ngrok-free.app/{user_id}"  # Генерация реферальной ссылки
+    web_app_url = f"https://d3a4-2a0d-5600-44-6000-00-3683.ngrok-free.app/user/{username}?user_id={user_id}"  # URL вашего Flask-сервера с именем пользователя
 
     # Добавляем пользователя в базу данных
     if not get_user(user_id):
