@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airdrop</title>
     <link rel="stylesheet" href="/src/friends.css" />
+    <meta name="user-id" content="{{ user_id }}">
+    <meta name="username" content="{{ username }}">
 </head>
 <body>
     <div class="container">
@@ -34,11 +36,11 @@
 
     </div>
     <div class="nav">
-        <a href="/" class="nav-button">Exchange</a>
-        <a href="#" class="nav-button">Mine</a>
-        <a href="/friends" class="nav-button">Friends</a>
-        <a href="#" class="nav-button">Earn</a>
-        <a href="/airdrop" class="nav-button">Airdrop</a>
+        <a href="/?user_id={{ user_id }}&username={{ username }}" class="nav-button">Exchange</a>
+        <a href="/mine?user_id={{ user_id }}&username={{ username }}" class="nav-button">Mine</a>
+        <a href="/friends?user_id={{ user_id }}&username={{ username }}" class="nav-button">Friends</a>
+        <a href="/earn?user_id={{ user_id }}&username={{ username }}" class="nav-button">Earn</a>
+        <a href="/airdrop?user_id={{ user_id }}&username={{ username }}" class="nav-button">Airdrop</a>
     </div>
 </body>
 </html>
