@@ -1,0 +1,57 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airdrop</title>    <link rel="stylesheet" href="/src/mine.css" />
+    <meta name="user-id" content="{{ user_id }}">    <meta name="username" content="{{ username }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Market</h1>
+
+        <div class="sections">
+            <button class="sections-button" id="hour">Profit per hour</button>
+            <button class="sections-button" id="tap">Profit per tap</button>
+        </div>
+
+        <div class="hour" id="block_hour">
+            <div class="card">
+                <div class="card-icons">
+                    <img src="/src/assets/coin.png" alt="Juventus">
+                </div>
+                <div class="card-title">Fan tokens</div>
+                <div class="card-profit">Прибыль в час</div>
+                <div class="profit-value">+950</div>
+                <div class="card-footer">
+                    <span>lvl 0</span>
+                    <span>10K</span>
+                </div>
+            </div>
+            
+            
+            <div class="card">
+                <div class="card-icons">
+                    <img src="/src/assets/coin.png" alt="Locked">
+                </div>
+                <div class="card-title">Staking</div>
+                <div class="card-profit">Прибыль в час</div>
+                <div class="profit-value">+600</div>
+                <div class="card-footer">
+                    <span>lvl 0</span>
+                    <span>10K</span>
+                </div>
+            </div>
+        </div>
+        <div class="tap" id="block_tap">
+            <p>Прибыль за тап</p>
+        </div>
+
+    </div>
+    <div class="nav">        
+        <a href="/?user_id={{ user_id }}&username={{ username }}" class="nav-button">Exchange</a>
+        <a href="/mine?user_id={{ user_id }}&username={{ username }}" class="nav-button">Mine</a>
+        <a href="/friends?user_id={{ user_id }}&username={{ username }}" class="nav-button">Friends</a>
+        <a href="/earn?user_id={{ user_id }}&username={{ username }}" class="nav-button">Earn</a>        
+        <a href="/airdrop?user_id={{ user_id }}&username={{ username }}" class="nav-button">Airdrop</a>
+    </div>
+    <script src="/src/mine.js"></script>
+</body>
+</html>
