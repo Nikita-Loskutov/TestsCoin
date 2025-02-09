@@ -1,0 +1,147 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airdrop</title>
+    <link rel="stylesheet" href="/src/mine.css" />
+    <meta name="user-id" content="{{ user_id }}">
+    <meta name="username" content="{{ username }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Market</h1>
+        <div class="hour" id="block_hour">
+            <div class="card">
+                <div class="card-icons">
+                    <img src="/src/assets/coin.png" alt="Juventus">
+                    <div class="card-content">
+                        <div class="card-title">Token</div>
+                        <div class="card-profit">Прибыль в час</div>
+                        <div class="profit-value">
+                            <img src="/src/assets/coin.png" alt="Coin" class="coin-icon-profit" id="coin-icon-profit">
+                            <p>+950</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>lvl 0</span>
+                    <span>10K</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-icons">
+                    <img src="/src/assets/coin.png" alt="Locked">
+                    <div class="card-content">
+                        <div class="card-title">Staking</div>
+                        <div class="card-profit">Прибыль в час</div>
+                        <div class="profit-value">
+                            <img src="/src/assets/coin.png" alt="Coin" class="coin-icon-profit" id="coin-icon-profit">
+                            <p>+600</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>lvl 0</span>
+                    <span>10K</span>
+                </div>
+            </div>
+
+            <!-- Добавим еще 4 карточки по аналогии -->
+            <div class="card">
+                <div class="card-icons">
+                    <img src="/src/assets/coin.png" alt="Locked">
+                    <div class="card-content">
+                        <div class="card-title">Genesis</div>
+                        <div class="card-profit">Прибыль в час</div>
+                        <div class="profit-value">
+                            <img src="/src/assets/coin.png" alt="Coin" class="coin-icon-profit" id="coin-icon-profit">
+                            <p>+800</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>lvl 0</span>
+                    <span>10K</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icons">
+                    <img src="/src/assets/coin.png" alt="Locked">
+                    <div class="card-content">
+                        <div class="card-title">Echelon</div>
+                        <div class="card-profit">Прибыль в час</div>
+                        <div class="profit-value">
+                            <img src="/src/assets/coin.png" alt="Coin" class="coin-icon-profit" id="coin-icon-profit">
+                            <p>+700</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>lvl 0</span>
+                    <span>10K</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icons">
+                    <img src="/src/assets/coin.png" alt="Locked">
+                    <div class="card-content">
+                        <div class="card-title">Ledger</div>
+                        <div class="card-profit">Прибыль в час</div>
+                        <div class="profit-value">
+                            <img src="/src/assets/coin.png" alt="Coin" class="coin-icon-profit" id="coin-icon-profit">
+                            <p>+900</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>lvl 0</span>
+                    <span>10K</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icons">
+                    <img src="/src/assets/coin.png" alt="Locked">
+                    <div class="card-content">
+                        <div class="card-title">Quantum</div>
+                        <div class="card-profit">Прибыль в час</div>
+                        <div class="profit-value">
+                            <img src="/src/assets/coin.png" alt="Coin" class="coin-icon-profit" id="coin-icon-profit">
+                            <p>+32500</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>lvl 0</span>
+                    <span>125К</span>
+                </div>
+            </div>
+            <div class="multitap">
+                <div class="multitap-icons">
+                    <img src="/src/assets/click.png" alt="Locked">
+                    <div class="card-content">
+                        <div class="card-title-multitap">Multitap</div>
+                        <div class="profit-value-multitap">
+                            <img src="/src/assets/coin.png" alt="Coin" id="multitap-coin-icon-profit">
+                            <p>1000</p>
+                            <span>lvl 1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="nav">        
+        <a href="/?user_id={{ user_id }}&username={{ username }}" class="nav-button">Exchange</a>
+        <a href="/mine?user_id={{ user_id }}&username={{ username }}" class="nav-button">Mine</a>
+        <a href="/friends?user_id={{ user_id }}&username={{ username }}" class="nav-button">Friends</a>
+        <a href="/earn?user_id={{ user_id }}&username={{ username }}" class="nav-button">Earn</a>        
+        <a href="/airdrop?user_id={{ user_id }}&username={{ username }}" class="nav-button">Airdrop</a>
+    </div>
+    <script src="/src/mine.js"></script>
+</body>
+</html>
