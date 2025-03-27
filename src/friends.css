@@ -169,3 +169,18 @@ h3{
     background-color: #444444; /* Если нужно, можно задать другой стиль при активации */
     color: #ffffff; /* Сохраняем цвет текста */
 }
+
+#copy-notification {
+    display: block;
+    position: fixed;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333333de;
+    color: white;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 15px;
+    z-index: 1000;
+    transition: all 1s;
+}

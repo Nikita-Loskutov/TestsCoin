@@ -16,6 +16,13 @@ class User(Base):
     friends_usernames = Column(String)  # Хранение ников друзей через запятую
     profit_per_hour = Column(Integer, default=0)
     profit_per_tap = Column(Integer, default=1)
+    level_token = Column(Integer, default=0)
+    level_staking = Column(Integer, default=0)
+    level_genesis = Column(Integer, default=0)
+    level_ledger = Column(Integer, default=0)
+    level_echeleon = Column(Integer, default=0)
+    level_quantum = Column(Integer, default=0)
+    level_multitap = Column(Integer, default=1)
 
     def __repr__(self):
         return (f"<User(user_id={self.user_id}, username='{self.username}', coins={self.coins}, "

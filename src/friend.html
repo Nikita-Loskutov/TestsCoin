@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +10,7 @@
 </head>
 <body>
     <div class="container">
+        <div id="copy-notification">Text copied!</div>
         <div class="head">
             <h1>Пригласите друзей!</h1>
             <p>Вы и ваш друг получите бонусы</p>
@@ -29,9 +29,10 @@
             <div id="referrals-list"></div>
         </div>
         <div class="invite">
-            <button class="inv">Пригласить друга</button>
-            <button class="copy">☐</button>
+            <button class="inv" onclick="shareReferralLink()">Пригласить друга</button>
+            <button class="copy" onclick="copyReferralLink()">☐</button>
         </div>
+    
 
         <script src="/src/referals.js"></script>
 

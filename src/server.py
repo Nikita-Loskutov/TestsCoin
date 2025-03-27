@@ -1,11 +1,12 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify, redirect
 import asyncio
 from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo, ChatMember
 from aiogram.filters import Command
 from aiogram import F
 from threading import Thread
 from db_utils import add_user, get_user, update_user_coins, update_invited_friends, award_referral_bonus
+from db_utils import get_card_data, update_card_level, session, User
 
 # === Настройки Telegram-бота ===
 TOKEN = '7930529716:AAF5TYEKKTsG_jUD3k0gtzIa3YvAfikUIdk'
@@ -44,7 +45,7 @@ def index():
         if current_level < len(level_thresholds):
             next_level_coins = level_thresholds[current_level] - level_thresholds[current_level - 1]
         else:
-            next_level_coins = "Maximum level"  # If max level, display this text
+            next_level_coins = "Max level"  # If max level, display this text
 
         return render_template(
             'index.html',
@@ -70,9 +71,36 @@ def index():
 
 @app.route('/mine')
 def mine():
-    user_id = request.args.get('user_id', 0)
-    username = request.args.get('username', 'Guest')
-    return render_template('mine.html', user_id=user_id, username=username)
+    user_id = request.args.get('user_id', 1)
+    user = session.query(User).filter_by(user_id=user_id).first()
+    card_data_token = get_card_data(user, 'token')
+    card_data_staking = get_card_data(user, 'staking')
+    card_data_genesis = get_card_data(user, 'genesis')
+    card_data_echeleon = get_card_data(user, 'echeleon')
+    card_data_ledger = get_card_data(user, 'ledger')
+    card_data_quantum = get_card_data(user, 'quantum')
+    card_data_multitap = get_card_data(user, 'multitap')
+    return render_template('mine.html', user_id=user_id, card_data_token=card_data_token, card_data_staking=card_data_staking, card_data_genesis=card_data_genesis, card_data_echeleon=card_data_echeleon, card_data_ledger=card_data_ledger, card_data_quantum=card_data_quantum, card_data_multitap=card_data_multitap)
+
+@app.route('/upgrade_card', methods=['POST'])
+def upgrade_card():
+    user_id = request.json.get('user_id')
+    card_type = request.json.get('card_type')
+    if update_card_level(user_id, card_type):
+        return jsonify(success=True)
+    return jsonify(success=False), 400
+
+@app.route('/get_card_data', methods=['GET'])
+def get_card_data_endpoint():
+    user_id = request.args.get('user_id')
+    card_type = request.args.get('card_type')
+    
+    user = session.query(User).filter_by(user_id=user_id).first()
+    if user:
+        card_data = get_card_data(user, card_type)
+        return jsonify(card_data)
+    else:
+        return jsonify({'error': 'User not found'}), 404
 
 @app.route('/friends')
 def friends():
@@ -129,7 +157,7 @@ def user(username):
         if current_level < len(level_thresholds):
             next_level_coins = level_thresholds[current_level] - level_thresholds[current_level - 1]
         else:
-            next_level_coins = "Maximum level"  # If max level, display this text
+            next_level_coins = "Max level"  # If max level, display this text
 
         return render_template(
             'index.html',
@@ -171,7 +199,7 @@ def user_data():
         if user.level < len(level_thresholds):
             next_level_coins = level_thresholds[user.level] - user.coins
         else:
-            next_level_coins = "Maximum level"  # Максимальный уровень
+            next_level_coins = "Max level"  # Максимальный уровень
 
         return jsonify(
             success=True,
@@ -284,7 +312,7 @@ def handle_referral_bonus():
         data = request.get_json()
         invitee_user_id = data.get('invitee_user_id')
         referrer_id = data.get('referrer_id')
-        premium = data.get('premium', False)
+        premium = data.get('premium', False)  # Получаем значение премиум
 
         if not invitee_user_id or not referrer_id:
             return jsonify(success=False, error="Invalid data"), 400
@@ -294,10 +322,17 @@ def handle_referral_bonus():
     except Exception as e:
         return jsonify(success=False, error=str(e)), 500
 
+
+
+#тестить завтра
+
+
 async def check_premium_status(user_id):
     try:
-        user = await bot.get_chat(user_id)
-        return user.is_premium
+        chat_member = await bot.get_chat_member(chat_id=user_id, user_id=user_id)
+        premium_status = chat_member.user.is_premium if hasattr(chat_member.user, 'is_premium') else False
+        print(f"User {user_id} premium status: {premium_status}")
+        return premium_status
     except Exception as e:
         print(f"Error checking premium status for user {user_id}: {e}")
         return False
@@ -308,7 +343,7 @@ async def start(message: types.Message):
     username = message.from_user.username or message.from_user.first_name or "User"
 
     args = message.text.split()[1:] if len(message.text.split()) > 1 else []
-    web_app_url = f"https://1274-2a0d-5600-44-5000-00-5e71.ngrok-free.app/user/{username}?user_id={user_id}"
+    web_app_url = f"https://e17b-37-59-30-211.ngrok-free.app/user/{username}?user_id={user_id}"
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='Играть в 1 клик 🎮', web_app=WebAppInfo(url=web_app_url))],
@@ -324,8 +359,9 @@ async def start(message: types.Message):
     if existing_user:
         await message.answer(
             "Привет! Добро пожаловать в MMM Coin 🎮!\n"
-            "Отныне ты — директор криптобиржи. Какой? Выбирай сам. Тапай по экрану, собирай монеты, качай пассивный доход!\n"
-            "Твоя реферальная ссылка: " + f'https://1274-2a0d-5600-44-5000-00-5e71.ngrok-free.app/invite?referrer_id={user_id}',
+            "Отныне ты — директор. Тапай по экрану, собирай монеты, качай пассивный доход,"
+            " разрабатывай собственную стратегию дохода."
+            "\nПро друзей не забывай — зови их в игру и получайте вместе ещё больше монет!",
             reply_markup=keyboard
         )
         return
@@ -338,16 +374,38 @@ async def start(message: types.Message):
 
     await message.answer(
         "Привет! Добро пожаловать в MMM Coin 🎮!\n"
-        "Отныне ты — директор криптобиржи. Какой? Выбирай сам. Тапай по экрану, собирай монеты, качай пассивный доход!\n"
-        "Твоя реферальная ссылка: " + f'https://1274-2a0d-5600-44-5000-00-5e71.ngrok-free.app/invite?referrer_id={user_id}',
+        "Отныне ты — директор. Тапай по экрану, собирай монеты, качай пассивный доход,"
+        " разрабатывай собственную стратегию дохода."
+        "\nПро друзей не забывай — зови их в игру и получайте вместе ещё больше монет!",
         reply_markup=keyboard
     )
 
 
+
 @dp.callback_query(F.data.in_({'how_to_earn'}))
 async def button_handler(callback_query: types.CallbackQuery):
-    if callback_query.data == 'how_to_earn':
-        await bot.send_message(callback_query.from_user.id, "Чтобы заработать, приглашай друзей и получай бонусы!")
+    user_id = callback_query.from_user.id
+    username = callback_query.from_user.username or callback_query.from_user.first_name or "User"
+
+    web_app_url = f"https://e17b-37-59-30-211.ngrok-free.app/user/{username}?user_id={user_id}"
+    keyboards = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text='Играть в 1 клик 🎮', web_app=WebAppInfo(url=web_app_url))],
+        [InlineKeyboardButton(text='Подписаться на канал 📢', url='https://t.me/your_channel')]
+    ])
+
+    await callback_query.message.answer(
+        "Как играть в MMMCoin?\n"
+        "💰Tap to earn\nТапай по экрану и собирай монеты.\n"
+        "\n⛏Mine\nПрокачивай карточки, которые дадут возможность пассивного дохода.\n"
+        "\n⏰ Прибыль в час\nБиржа будет работать для тебя самостоятельно, даже когда ты не в игре в течение"
+        " 3х часов. Далее нужно будет перезайти в игру снова.\n"
+        "\n📈 LVL\nЧем больше монет у тебя на балансе — тем выше уровень биржи."
+        " Чем выше уровень — тем быстрее сможешь зарабатывать ещё больше монет.\n"
+        "\n👥 Friends\nПриглашай своих друзей, и вы получите бонусы. Помоги другу перейти в следующие лиги,"
+        " и вы получите ещё больше бонусов.",
+        reply_markup=keyboards
+    )
+
     await callback_query.answer()
 
 

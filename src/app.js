@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Максимальный уровень
             levelText.innerText = `Level ${level}/10`;
             progressBar.style.width = `100%`; // Полный прогресс бар
-            coinsToUpElement.innerText = "Maximum level"; // Текст для максимального уровня
+            coinsToUpElement.innerText = "Max level"; // Текст для максимального уровня
         } else {
             // Рассчитываем прогресс и монеты до следующего уровня
             const progress = calculateProgress(score, level);
