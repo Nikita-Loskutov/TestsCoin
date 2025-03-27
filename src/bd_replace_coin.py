@@ -33,4 +33,4 @@ def update_coins(database_url, user_id, new_coins):
 
 
 # Пример вызова функции
-update_coins("sqlite:///users.db", 1420231559, 100000000000)
+update_coins("sqlite:///users.db", 1420231559, 100000)

@@ -284,20 +284,29 @@ def get_card_data(user, card_type):
         return data
     return {'cost': 0, 'profit': 0, 'level': current_level}
 
+# src/db_utils.py
+
 def update_card_level(user_id, card_type):
     user = session.query(User).filter_by(user_id=user_id).first()
     if user:
         level_attr = f'level_{card_type}'
         current_level = getattr(user, level_attr, 0)
-        card_data = CARD_DATA.get(card_type, [])
-        if 0 <= current_level < len(card_data):
-            cost = card_data[current_level]['cost']
-            if user.coins >= cost:
-                user.coins -= cost
+        card_data = CARD_DATA[card_type]
+        
+        if current_level < len(card_data):
+            next_level_cost = card_data[current_level]['cost']
+            
+            if user.coins >= next_level_cost:
                 setattr(user, level_attr, current_level + 1)
+                user.coins -= next_level_cost
+                user.update_profit()
                 session.commit()
                 return True
-    return False
+            else:
+                return False, "Not enough coins"
+        else:
+            return False, "Max level reached"
+    return False, "User not found"
 
 
 # Debugging Helper

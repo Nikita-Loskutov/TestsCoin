@@ -82,11 +82,17 @@ def mine():
     card_data_multitap = get_card_data(user, 'multitap')
     return render_template('mine.html', user_id=user_id, card_data_token=card_data_token, card_data_staking=card_data_staking, card_data_genesis=card_data_genesis, card_data_echeleon=card_data_echeleon, card_data_ledger=card_data_ledger, card_data_quantum=card_data_quantum, card_data_multitap=card_data_multitap)
 
+# src/server.py
+
 @app.route('/upgrade_card', methods=['POST'])
 def upgrade_card():
     user_id = request.json.get('user_id')
     card_type = request.json.get('card_type')
     if update_card_level(user_id, card_type):
+        user = session.query(User).filter_by(user_id=user_id).first()
+        if user:
+            user.update_profit()
+            session.commit()
         return jsonify(success=True)
     return jsonify(success=False), 400
 
@@ -343,7 +349,7 @@ async def start(message: types.Message):
     username = message.from_user.username or message.from_user.first_name or "User"
 
     args = message.text.split()[1:] if len(message.text.split()) > 1 else []
-    web_app_url = f"https://e17b-37-59-30-211.ngrok-free.app/user/{username}?user_id={user_id}"
+    web_app_url = f"https://48cb-57-129-38-230.ngrok-free.app/user/{username}?user_id={user_id}"
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='Играть в 1 клик 🎮', web_app=WebAppInfo(url=web_app_url))],
@@ -387,7 +393,7 @@ async def button_handler(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     username = callback_query.from_user.username or callback_query.from_user.first_name or "User"
 
-    web_app_url = f"https://e17b-37-59-30-211.ngrok-free.app/user/{username}?user_id={user_id}"
+    web_app_url = f"https://48cb-57-129-38-230.ngrok-free.app/user/{username}?user_id={user_id}"
     keyboards = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='Играть в 1 клик 🎮', web_app=WebAppInfo(url=web_app_url))],
         [InlineKeyboardButton(text='Подписаться на канал 📢', url='https://t.me/your_channel')]
