@@ -15,7 +15,7 @@ def add_user(user_id, username, ref_link=None, referrer_id=None):
         session.commit()
         print(f"User {username} added successfully.")
 
-        # Обновляем информацию о пригласившем, если есть referrer_id
+        # Обновляем информацию о пригласившем
         if referrer_id:
             update_invited_friends(referrer_id, user_id)
 
@@ -48,7 +48,6 @@ def award_referral_bonus(invitee_user_id, referrer_id, premium=False):
         invitee = get_user(invitee_user_id)
         referrer = get_user(referrer_id)
         if invitee and referrer:
-            # Учитываем статус премиум
             bonus = 0
             if premium: 
                 bonus = 25000
@@ -284,7 +283,7 @@ def get_card_data(user, card_type):
         return data
     return {'cost': 0, 'profit': 0, 'level': current_level}
 
-# src/db_utils.py
+
 
 def update_card_level(user_id, card_type):
     user = session.query(User).filter_by(user_id=user_id).first()
@@ -302,20 +301,20 @@ def update_card_level(user_id, card_type):
     return False
 
 
-# Debugging Helper
+
 if __name__ == "__main__":
-    # Example usage
+
     user_id = 1
     username = "test_user"
     ref_link = "http://example.com/ref/1"
 
-    # Add user
+
     add_user(user_id, username, ref_link)
 
-    # Update coins
+
     update_user_coins(user_id, 100)
 
-    # Fetch user and print
+
     user = get_user(user_id)
     if user:
         print(user)
@@ -326,6 +325,5 @@ if __name__ == "__main__":
     else:
         print(f"Failed to update {card_type} level for user {user_id}.")
 
-    # Update profit
     update_profit_per_hour(user_id, 50.0)
     update_profit_per_tap(user_id, 2.5)

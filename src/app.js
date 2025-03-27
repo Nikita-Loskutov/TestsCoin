@@ -13,18 +13,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     let profitPerHour = 0;
     let level = 1;
 
-    // Уровневые пороги
+    // Уровни
     const levelThresholds = [
-        0,          // Уровень 1
-        5000,       // Уровень 2
-        25000,      // Уровень 3
-        100000,     // Уровень 4
-        1000000,    // Уровень 5
-        2000000,    // Уровень 6
-        10000000,   // Уровень 7
-        50000000,   // Уровень 8
-        1000000000, // Уровень 9
-        10000000000 // Уровень 10
+        0,          
+        5000,       
+        25000,      
+        100000,     
+        1000000,    
+        2000000,    
+        10000000,   
+        50000000,   
+        1000000000,
+        10000000000 
 
     ];
 
@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const nextLevelThreshold = levelThresholds[level] || Infinity;
         const coinsToNextLevel = nextLevelThreshold;
 
-        // Если максимальный уровень достигнут
         return coinsToNextLevel > 0 ? coinsToNextLevel : 0;
     }
 
@@ -60,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function updateLevelProgressAndCoins() {
         const newLevel = calculateLevel(score);
 
-        // Уровень не должен понижаться
+
         if (newLevel > level) {
             level = newLevel;
         }
@@ -68,8 +67,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (level >= levelThresholds.length) {
             // Максимальный уровень
             levelText.innerText = `Level ${level}/10`;
-            progressBar.style.width = `100%`; // Полный прогресс бар
-            coinsToUpElement.innerText = "Max level"; // Текст для максимального уровня
+            progressBar.style.width = `100%`; 
+            coinsToUpElement.innerText = "Max level"; 
         } else {
             // Рассчитываем прогресс и монеты до следующего уровня
             const progress = calculateProgress(score, level);
@@ -77,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             levelText.innerText = `Level ${level}/10`;
             progressBar.style.width = `${progress}%`;
-            coinsToUpElement.innerText = coinsToNextLevel; // Обновляем монеты до следующего уровня
+            coinsToUpElement.innerText = coinsToNextLevel; 
         }
     }
 
@@ -108,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Функция для обновления монет на сервере
+    // Функция для обновления монет серв
     async function updateCoinsOnServer() {
         try {
             const response = await fetch('/update_coins', {
@@ -132,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Обработчик клика на хомяка
+
     hamster.addEventListener('click', (event) => {
         const rect = hamster.getBoundingClientRect();
         const offsetX = event.clientX - rect.left - rect.width / 2;
@@ -154,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateLevelProgressAndCoins();
         updateCoinsOnServer();
 
-        // Анимация "+X"
+
         const plusOne = document.createElement('div');
         plusOne.className = 'floating-plus-one';
         plusOne.innerText = `+${profitPerTap}`;
@@ -170,14 +169,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Авто-добавление пассивного дохода
 //    setInterval(() => {
-//        score += profitPerHour / 3600; // Добавляем доход каждую секунду
+//        score += profitPerHour;
 //        score = Math.floor(score);
 //        scoreElement.innerText = score;
-//
+
 //        updateLevelProgressAndCoins();
 //        updateCoinsOnServer();
-//    }, 1000);
+//    }, 3600000);
 
-    // Загрузка данных при старте
+
     await fetchUserData();
 });

@@ -23,7 +23,7 @@ body {
     padding: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
-    overflow-y: auto; /* Добавлено для вертикальной прокрутки */
+    overflow-y: auto; 
     overflow-x: hidden;
 }
 
@@ -117,10 +117,10 @@ h3{
 }
 @keyframes pulse {
     0%, 100% {
-        transform: scale(1); /* Исходный размер */
+        transform: scale(1); 
     }
     50% {
-        transform: scale(1.1); /* Увеличение на 20% */
+        transform: scale(1.1); 
     }
 }
 
@@ -150,7 +150,7 @@ h3{
     transition: background-color 0.3s;
     text-align: center;
     font-size: 0.9em;
-    -webkit-tap-highlight-color: transparent; /* Убирает синий эффект на мобильных устройствах */
+    -webkit-tap-highlight-color: transparent; 
 }
 
 .nav-button:hover {
@@ -159,15 +159,15 @@ h3{
 }
 
 .nav-button:active {
-    outline: none; /* Убираем контур */
-    background-color: #535454; /* Если нужно, можно задать другой стиль при активации */
-    color: #ffffff; /* Сохраняем цвет текста */
+    outline: none; 
+    background-color: #535454; 
+    color: #ffffff; 
 }
 
 .nav-button:focus {
-    outline: none; /* Убираем контур */
-    background-color: #444444; /* Если нужно, можно задать другой стиль при активации */
-    color: #ffffff; /* Сохраняем цвет текста */
+    outline: none; 
+    background-color: #444444; 
+    color: #ffffff; 
 }
 
 #copy-notification {

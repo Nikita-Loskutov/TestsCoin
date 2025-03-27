@@ -3,16 +3,15 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 def update_coins(database_url, user_id, new_coins):
-    # Создание подключения к базе данных
-    engine = create_engine(database_url, echo=True)  # echo=True для логов SQL-запросов
+
+    engine = create_engine(database_url, echo=True)
     metadata = MetaData()
 
     try:
-        # Отражение структуры таблицы из базы данных
-        metadata.reflect(bind=engine)
-        users = metadata.tables['users']  # Динамическая загрузка таблицы
 
-        # Подключение и выполнение обновления
+        metadata.reflect(bind=engine)
+        users = metadata.tables['users']
+
         with engine.connect() as connection:
             stmt = (
                 update(users)
@@ -20,9 +19,9 @@ def update_coins(database_url, user_id, new_coins):
                 .values(coins=new_coins)
             )
             result = connection.execute(stmt)
-            connection.commit()  # Фиксация транзакции для SQLite
+            connection.commit()  
 
-            # Проверка количества обновленных строк
+
             if result.rowcount > 0:
                 print(f"Successfully updated coins for user {user_id} to {new_coins}.")
             else:
@@ -32,5 +31,4 @@ def update_coins(database_url, user_id, new_coins):
         print(f"An error occurred: {e}")
 
 
-# Пример вызова функции
 update_coins("sqlite:///users.db", 1420231559, 100000)

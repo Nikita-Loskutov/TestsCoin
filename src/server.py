@@ -8,17 +8,17 @@ from threading import Thread
 from db_utils import add_user, get_user, update_user_coins, update_invited_friends, award_referral_bonus
 from db_utils import get_card_data, update_card_level, session, User
 
-# === Настройки Telegram-бота ===
+
 TOKEN = '7930529716:AAF5TYEKKTsG_jUD3k0gtzIa3YvAfikUIdk'
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# === Настройки Flask-сервера ===
+
 app = Flask(__name__, static_folder='../src', template_folder='../src')
 
 
-# === Роуты Flask ===
+#Роуты Flask
 @app.route('/')
 def index():
     user_id = request.args.get('user_id', 0)
@@ -45,7 +45,7 @@ def index():
         if current_level < len(level_thresholds):
             next_level_coins = level_thresholds[current_level] - level_thresholds[current_level - 1]
         else:
-            next_level_coins = "Max level"  # If max level, display this text
+            next_level_coins = "Max level"
 
         return render_template(
             'index.html',
@@ -55,7 +55,7 @@ def index():
             profit_per_tap=user.profit_per_tap,
             profit_per_hour=user.profit_per_hour,
             level=user.level,
-            next_level_coins=next_level_coins  # Количество монет для следующего уровня
+            next_level_coins=next_level_coins
         )
     else:
         return render_template(
@@ -66,7 +66,7 @@ def index():
             profit_per_tap=1,
             profit_per_hour=0,
             level=1,
-            next_level_coins=5000  # Начальное значение для уровня 2
+            next_level_coins=5000
         )
 
 @app.route('/mine')
@@ -82,7 +82,6 @@ def mine():
     card_data_multitap = get_card_data(user, 'multitap')
     return render_template('mine.html', user_id=user_id, card_data_token=card_data_token, card_data_staking=card_data_staking, card_data_genesis=card_data_genesis, card_data_echeleon=card_data_echeleon, card_data_ledger=card_data_ledger, card_data_quantum=card_data_quantum, card_data_multitap=card_data_multitap)
 
-# src/server.py
 
 @app.route('/upgrade_card', methods=['POST'])
 def upgrade_card():
@@ -137,14 +136,13 @@ def assets_files(filename):
     return send_from_directory('../src/assets', filename)
 
 
-# Новый роут для рендеринга шаблона с именем пользователя
+
 @app.route('/user/<username>')
 def user(username):
-    user_id = request.args.get('user_id', 0)  # Получение user_id
-    user = get_user(user_id)  # Получаем пользователя из БД
+    user_id = request.args.get('user_id', 0)  
+    user = get_user(user_id)  
 
     if user:
-        # Определяем монеты до следующего уровня
         level_thresholds = [
             0,          # Уровень 1
             5000,       # Уровень 2
@@ -163,7 +161,7 @@ def user(username):
         if current_level < len(level_thresholds):
             next_level_coins = level_thresholds[current_level] - level_thresholds[current_level - 1]
         else:
-            next_level_coins = "Max level"  # If max level, display this text
+            next_level_coins = "Max level"
 
         return render_template(
             'index.html',
@@ -173,7 +171,7 @@ def user(username):
             profit_per_tap=user.profit_per_tap,
             profit_per_hour=user.profit_per_hour,
             level=user.level,
-            next_level_coins=next_level_coins  # Количество монет для следующего уровня
+            next_level_coins=next_level_coins
         )
     else:
         return render_template(
@@ -184,7 +182,7 @@ def user(username):
             profit_per_tap=1,
             profit_per_hour=0,
             level=1,
-            next_level_coins=5000  # Начальное значение для уровня 2
+            next_level_coins=5000
         )
 
 
@@ -195,17 +193,15 @@ def user_data():
     user_id = request.args.get('user_id', 0)
     user = get_user(user_id)
     if user:
-        # Определяем пороги уровней
         level_thresholds = [
             0, 5000, 25000, 100000, 1000000,
             2000000, 10000000, 50000000, 1000000000, 10000000000
         ]
 
-        # Рассчитываем монеты до следующего уровня
         if user.level < len(level_thresholds):
             next_level_coins = level_thresholds[user.level] - user.coins
         else:
-            next_level_coins = "Max level"  # Максимальный уровень
+            next_level_coins = "Max level"
 
         return jsonify(
             success=True,
@@ -240,15 +236,12 @@ def update_coins():
                 2000000, 10000000, 50000000, 1000000000, 10000000000
             ]
 
-            # Определяем новый уровень
             new_level = next((i + 1 for i, threshold in enumerate(level_thresholds) if coins < threshold),
                              len(level_thresholds))
 
-            # Уровень только растёт
             if new_level > user.level:
                 user.level = new_level
 
-            # Обновляем монеты
             update_user_coins(user_id, coins)
 
             return jsonify(success=True)
@@ -279,24 +272,24 @@ def update_profit_per_hour():
 
 
 
-# === Telegram-бот: Обработчики ===
+#Tг-бот Обработчики
 
-# Добавляем новый роут для обработки ссылки приглашения
+
 @app.route('/invite')
 def invite():
     referrer_id = request.args.get('referrer_id')
     if not referrer_id:
         return jsonify(success=False, error="Referrer ID is missing"), 400
 
-    # Здесь можно добавить логику для получения информации о пригласившем
+
     referrer = get_user(referrer_id)
     if not referrer:
         return jsonify(success=False, error="Referrer not found"), 404
 
-    # Генерируем уникальную ссылку для запуска Telegram мини-аппа
+
     telegram_app_url = f"https://t.me/MMM_Coin_bot?start=referrer_{referrer_id}"
 
-    # Перенаправляем пользователя на Telegram мини-апп
+
     return redirect(telegram_app_url)
 
 
@@ -310,7 +303,7 @@ def invited_friends():
     else:
         return jsonify(success=False, error="User not found"), 404
 
-# server.py
+
 
 @app.route('/award_referral_bonus', methods=['POST'])
 def handle_referral_bonus():
@@ -318,7 +311,7 @@ def handle_referral_bonus():
         data = request.get_json()
         invitee_user_id = data.get('invitee_user_id')
         referrer_id = data.get('referrer_id')
-        premium = data.get('premium', False)  # Получаем значение премиум
+        premium = data.get('premium', False)
 
         if not invitee_user_id or not referrer_id:
             return jsonify(success=False, error="Invalid data"), 400
@@ -328,9 +321,6 @@ def handle_referral_bonus():
     except Exception as e:
         return jsonify(success=False, error=str(e)), 500
 
-
-
-#тестить завтра
 
 
 async def check_premium_status(user_id):
@@ -415,21 +405,21 @@ async def button_handler(callback_query: types.CallbackQuery):
     await callback_query.answer()
 
 
-# === Запуск Telegram-бота ===
+#Запуск Tг бота
 async def telegram_main():
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
 
-# === Запуск Flask и Telegram параллельно ===
+#Запуск Flask
 def run_flask():
     app.run(host='0.0.0.0', port=5000, use_reloader=False)
 
 
 if __name__ == '__main__':
-    # Flask запускается в отдельном потоке
+    # Flask  в отдельном потоке
     flask_thread = Thread(target=run_flask)
     flask_thread.start()
 
-    # Telegram запускается в основном asyncio-событии
+    # Telegram запускается в основном потоке
     asyncio.run(telegram_main())
