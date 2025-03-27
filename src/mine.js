@@ -73,6 +73,7 @@ async function upgradeCard(cardType) {
         
     } else {
         showCopyNotificationFalse();
+        upgradeBlock.style.top = '150%';
     }
 }
 
